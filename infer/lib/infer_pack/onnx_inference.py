@@ -119,7 +119,7 @@ class OnnxRVC:
         if org_length / sr > 50.0:
             raise RuntimeError("Reached Max Length")
 
-        wav16k = librosa.resample(wav, orig_sr=self.sampling_rate, target_sr=16000)
+        wav16k = librosa.resample(wav, orig_sr=self.sampling_rate, target_sr=32000)
         wav16k = wav16k
 
         hubert = self.vec_model(wav16k)
