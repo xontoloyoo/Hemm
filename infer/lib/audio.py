@@ -67,7 +67,7 @@ def load_audio(file, sr):
         audio = file[1] / 32768.0
         if len(audio.shape) == 2:
             audio = np.mean(audio, -1)
-        return librosa.resample(audio, orig_sr=file[0], target_sr=16000)
+        return librosa.resample(audio, orig_sr=file[0], target_sr=32000)
 
     except:
         raise RuntimeError(traceback.format_exc())
