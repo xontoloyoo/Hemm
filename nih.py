@@ -1,8 +1,8 @@
 import os
 import sys
 
-infer_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'infer'))
-sys.path.append(infer_dir)
+now_dir = os.getcwd()
+sys.path.append(now_dir)
 from infer.modules.vc.modules import VC
 from infer.modules.uvr5.modules import uvr
 from infer.lib.train.process_ckpt import (
