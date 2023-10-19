@@ -652,8 +652,8 @@ if __name__ == "__main__":
     if len(audio.shape) > 1:
         audio = librosa.to_mono(audio.transpose(1, 0))
     audio_bak = audio.copy()
-    if sampling_rate != 16000:
-        audio = librosa.resample(audio, orig_sr=sampling_rate, target_sr=16000)
+    if sampling_rate != 32000:
+        audio = librosa.resample(audio, orig_sr=sampling_rate, target_sr=32000)
     model_path = r"D:\BaiduNetdiskDownload\RVC-beta-v2-0727AMD_realtime\rmvpe.pt"
     thred = 0.03  # 0.01
     device = "cuda" if torch.cuda.is_available() else "cpu"
