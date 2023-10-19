@@ -1,8 +1,11 @@
 import os
 import sys
 
-now_dir = os.getcwd()
-sys.path.append(now_dir)
+# Dapatkan direktori "infer" berdasarkan direktori "nih.py"
+infer_dir = os.path.join(os.path.dirname(__file__), "infer")
+
+# Tambahkan direktori "infer" ke jalur pencarian modul Python
+sys.path.append(infer_dir)
 from infer.modules.vc.modules import VC
 from infer.modules.uvr5.modules import uvr
 from infer.lib.train.process_ckpt import (
