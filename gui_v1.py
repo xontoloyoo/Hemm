@@ -152,7 +152,7 @@ if __name__ == "__main__":
         def launcher(self):
             data = self.load()
             self.config.use_jit = False  # data.get("use_jit", self.config.use_jit)
-            sg.theme("LightBlue3")
+            sg.theme("DarkBlue")
             input_devices, output_devices, _, _ = self.get_devices()
             layout = [
                 [
