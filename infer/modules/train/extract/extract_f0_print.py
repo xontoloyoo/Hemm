@@ -31,7 +31,7 @@ f0method = sys.argv[3]
 
 
 class FeatureInput(object):
-    def __init__(self, samplerate=16000, hop_size=320):
+    def __init__(self, samplerate=32000, hop_size=320):
         self.fs = samplerate
         self.hop = hop_size
 
@@ -45,7 +45,7 @@ class FeatureInput(object):
         x = load_audio(path, self.fs)
         p_len = x.shape[0] // self.hop
         if f0_method == "pm":
-            time_step = 160 / 16000 * 1000
+            time_step = 320 / 32000 * 1000
             f0_min = 100
             f0_max = 2200
             f0 = (
