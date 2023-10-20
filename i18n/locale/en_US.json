@@ -48,7 +48,6 @@
     "处理数据": "Process data",
     "导出Onnx模型": "Export Onnx Model",
     "导出文件格式": "Export file format",
-    "常见问题解答": "FAQ (Frequently Asked Questions)",
     "常规设置": "General settings",
     "开始音频转换": "Start audio conversion",
     "很遗憾您这没有能用的显卡来支持您训练": "Unfortunately, there is no compatible GPU available to support your training.",
