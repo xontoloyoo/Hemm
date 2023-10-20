@@ -37,7 +37,7 @@ class FeatureInput(object):
 
         self.f0_bin = 256
         self.f0_max = 2200.0
-        self.f0_min = 100.0
+        self.f0_min = 80.0
         self.f0_mel_min = 1127 * np.log(1 + self.f0_min / 700)
         self.f0_mel_max = 1127 * np.log(1 + self.f0_max / 700)
 
@@ -46,7 +46,7 @@ class FeatureInput(object):
         p_len = x.shape[0] // self.hop
         if f0_method == "pm":
             time_step = 320 / 32000 * 1000
-            f0_min = 100
+            f0_min = 80
             f0_max = 2200
             f0 = (
                 parselmouth.Sound(x, self.fs)
