@@ -1496,18 +1496,6 @@ with gr.Blocks(title="Nih Cuy") as app:
                 export_onnx, [ckpt_dir, onnx_dir], infoOnnx, api_name="export_onnx"
             )
 
-        tab_faq = i18n("常见问题解答")
-        with gr.TabItem(tab_faq):
-            try:
-                if tab_faq == "常见问题解答":
-                    with open("docs/cn/faq.md", "r", encoding="utf8") as f:
-                        info = f.read()
-                else:
-                    with open("docs/en/faq_en.md", "r", encoding="utf8") as f:
-                        info = f.read()
-                gr.Markdown(value=info)
-            except:
-                gr.Markdown(traceback.format_exc())
 
     if config.iscolab:
         app.queue(concurrency_count=511, max_size=1022).launch(share=True)
