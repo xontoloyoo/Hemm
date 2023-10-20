@@ -31,7 +31,7 @@ f0method = sys.argv[3]
 
 
 class FeatureInput(object):
-    def __init__(self, samplerate=32000, hop_size=160):
+    def __init__(self, samplerate=32000, hop_size=320):
         self.fs = samplerate
         self.hop = hop_size
 
