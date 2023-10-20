@@ -63,7 +63,7 @@ os.makedirs(outPath, exist_ok=True)
 # wave must be 16k, hop_size=320
 def readwave(wav_path, normalize=False):
     wav, sr = sf.read(wav_path)
-    assert sr == 32000
+    assert sr == 16000
     feats = torch.from_numpy(wav).float()
     if feats.dim() == 2:  # double channels
         feats = feats.mean(-1)
