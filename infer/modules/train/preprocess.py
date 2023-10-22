@@ -78,7 +78,7 @@ class PreProcess:
         )  # , res_type="soxr_vhq"
         wavfile.write(
             "%s/%s_%s.wav" % (self.wavs16k_dir, idx0, idx1),
-            16000,
+            32000,
             tmp_audio.astype(np.float32),
         )
 
