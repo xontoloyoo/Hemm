@@ -241,10 +241,10 @@ class AudioPreDeEcho:
                 (
                     X_wave[d],
                     _,
-                ) = librosa.core.load(  # 理论上librosa读取可能对某些音频有bug，应该上ffmpeg读取，但是太麻烦了弃坑
+                ) = librosa.core.load( librosa.core.load(file_path, sr=44100, mono=False)
                     music_file,
-                    bp["sr"],
-                    False,
+                    sr=44100,  # Tambahkan sr=44100 sebagai argumen kata kunci
+                    mono=False,  # Tambahkan mono=False sebagai argumen kata kunci
                     dtype=np.float32,
                     res_type=bp["res_type"],
                 )
