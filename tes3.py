@@ -25,7 +25,7 @@ import logging
 
 BASE_DIR = Path.cwd()
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 weight_uvr5_root = os.path.join(BASE_DIR, 'assets/uvr5_weights')
 
 names = []
