@@ -22,6 +22,7 @@ import threading
 import shutil
 import logging
 
+load_dotenv()
 config = Config()
 vc = VC(config)
 
