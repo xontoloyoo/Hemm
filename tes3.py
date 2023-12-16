@@ -52,7 +52,7 @@ with gr.Blocks(title="Nih Cuy") as app:
                         file_count="multiple", label=("也可批量输入音频文件, 二选一, 优先读文件夹")
                     )
                 with gr.Column():
-                    model_choose = gr.Dropdown(label=("模型"), choices=uvr5_weights)
+                    model_choose = gr.Dropdown(label=("模型"), choices=weight_uvr5)
                     agg = gr.Slider(
                         minimum=0,
                         maximum=20,
