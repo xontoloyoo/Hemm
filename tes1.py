@@ -831,12 +831,13 @@ with gr.TabItem(i18n("伴奏人声分离&去混响&去回声")):
                         [vc_output4],
                         api_name="uvr_convert",
                     )
-    if config.iscolab:
-        app.queue(concurrency_count=511, max_size=1022).launch(share=True)
-    else:
-        app.queue(concurrency_count=511, max_size=1022).launch(
-            server_name="0.0.0.0",
-            inbrowser=not config.noautoopen,
-            server_port=config.listen_port,
-            quiet=True,
-        )
+# Lanjutkan dengan menjalankan antarmuka pengguna
+if config.iscolab:
+    app.queue(concurrency_count=511, max_size=1022).launch(share=True)
+else:
+    app.queue(concurrency_count=511, max_size=1022).launch(
+        server_name="0.0.0.0",
+        inbrowser=not config.noautoopen,
+        server_port=config.listen_port,
+        quiet=True,
+    )
