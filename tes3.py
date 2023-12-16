@@ -24,15 +24,13 @@ import shutil
 import logging
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-#mdxnet_models_dir = os.path.join(BASE_DIR, 'assets/uvr5_weights')
-#output_dir = os.path.join(BASE_DIR, 'song_output')
 weight_uvr5_root = os.path.join(BASE_DIR, 'assets/uvr5_weights')
 
 names = []
 for name in os.listdir(weight_uvr5_root):
     if name.endswith(".pth"):
         names.append(name)
+
 uvr5_names = []
 for name in os.listdir(weight_uvr5_root):
     if name.endswith(".pth") or "onnx" in name:
