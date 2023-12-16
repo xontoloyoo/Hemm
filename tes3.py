@@ -38,6 +38,10 @@ if config.dml == True:
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 weight_uvr5 = os.path.join(BASE_DIR, 'assets/uvr5_weights')
 
+uvr5_names = []
+for name in os.listdir(weight_uvr5):
+    if name.endswith(".pth") or "onnx" in name:
+        uvr5_names.append(name.replace(".pth", ""))
 
 with gr.Blocks(title="Nih Cuy") as app:
     gr.Markdown("## GassKeun")
@@ -65,7 +69,7 @@ with gr.Blocks(title="Nih Cuy") as app:
                         file_count="multiple", label=("也可批量输入音频文件, 二选一, 优先读文件夹")
                     )
                 with gr.Column():
-                    model_choose = gr.Dropdown(label=("模型"), choices=weight_uvr5)
+                    model_choose = gr.Dropdown(label=("模型"), choices=uvr5_names)
                     agg = gr.Slider(
                         minimum=0,
                         maximum=20,
