@@ -27,12 +27,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 weight_uvr5 = os.path.join(BASE_DIR, '/assets/uvr5_weights')
 
 names = []
-for name in os.listdir(weight_uvr5):
+for name in os.listdir(uvr5_weights):
     if name.endswith(".pth"):
         names.append(name)
 
 uvr5_names = []
-for name in os.listdir(weight_uvr5):
+for name in os.listdir(uvr5_weights):
     if name.endswith(".pth") or "onnx" in name:
         uvr5_names.append(name.replace(".pth", ""))
 
