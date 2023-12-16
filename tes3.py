@@ -26,6 +26,15 @@ load_dotenv()
 config = Config()
 vc = VC(config)
 
+if config.dml == True:
+
+    def forward_dml(ctx, x, scale):
+        ctx.scale = scale
+        res = x.clone().detach()
+        return res
+
+    fairseq.modules.grad_multiply.GradMultiply.forward = forward_dml
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 weight_uvr5 = os.path.join(BASE_DIR, 'assets/uvr5_weights')
 
