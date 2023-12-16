@@ -71,9 +71,8 @@ class AudioPre:
                     X_wave[d] = np.asfortranarray([X_wave[d], X_wave[d]])
             else:  # lower bands
                 X_wave[d] = librosa.core.resample(
-                    X_wave[d + 1],
-                    self.mp.param["band"][d + 1]["sr"],
-                    bp["sr"],
+                    X_wave[d], orig_sr=44100, target_sr=44100
+                    self.mp.param["band"][d + 1],
                     res_type=bp["res_type"],
                 )
             # Stft of wave source
