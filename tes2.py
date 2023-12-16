@@ -5,12 +5,6 @@ infer_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'infer
 sys.path.append(infer_dir)
 from infer.modules.vc.modules import VC
 from infer.modules.uvr5.modules import uvr
-#from infer.lib.train.process_ckpt import (
-    change_info,
-    extract_small_model,
-    merge,
-    show_info,
-)
 from i18n.i18n import I18nAuto
 from configs.config import Config
 from sklearn.cluster import MiniBatchKMeans
