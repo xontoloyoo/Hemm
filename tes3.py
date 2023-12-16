@@ -3,7 +3,6 @@ import sys
 
 from infer.modules.vc.modules import VC
 from infer.modules.uvr5.modules import uvr
-from i18n.i18n import I18nAuto
 from configs.config import Config
 from sklearn.cluster import MiniBatchKMeans
 from dotenv import load_dotenv
