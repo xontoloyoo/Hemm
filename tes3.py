@@ -24,7 +24,7 @@ import shutil
 import logging
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-weight_uvr5 = os.path.join(BASE_DIR, 'assets/uvr5_weights')
+weight_uvr5 = os.path.join(BASE_DIR, '/assets/uvr5_weights')
 
 names = []
 for name in os.listdir(weight_uvr5):
