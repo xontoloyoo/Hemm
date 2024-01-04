@@ -62,8 +62,8 @@ class AudioPre:
                     _,
                 ) = librosa.core.load(  # 理论上librosa读取可能对某些音频有bug，应该上ffmpeg读取，但是太麻烦了弃坑
                     music_file,
-                    sr=44100,  # Tambahkan sr=44100 sebagai argumen kata kunci
-                    mono=False,  # Tambahkan mono=False sebagai argumen kata kunci
+                    bp["sr"],
+                    False,
                     dtype=np.float32,
                     res_type=bp["res_type"],
                 )
@@ -71,8 +71,9 @@ class AudioPre:
                     X_wave[d] = np.asfortranarray([X_wave[d], X_wave[d]])
             else:  # lower bands
                 X_wave[d] = librosa.core.resample(
-                    X_wave[d], orig_sr=44100, target_sr=44100
-                    self.mp.param["band"][d + 1],
+                    X_wave[d + 1],
+                    self.mp.param["band"][d + 1]["sr"],
+                    bp["sr"],
                     res_type=bp["res_type"],
                 )
             # Stft of wave source
@@ -240,10 +241,10 @@ class AudioPreDeEcho:
                 (
                     X_wave[d],
                     _,
-                ) = librosa.core.load(
+                ) = librosa.core.load(  # 理论上librosa读取可能对某些音频有bug，应该上ffmpeg读取，但是太麻烦了弃坑
                     music_file,
-                    sr=44100,  # Tambahkan sr=44100 sebagai argumen kata kunci
-                    mono=False,  # Tambahkan mono=False sebagai argumen kata kunci
+                    bp["sr"],
+                    False,
                     dtype=np.float32,
                     res_type=bp["res_type"],
                 )
@@ -306,14 +307,14 @@ class AudioPreDeEcho:
                 sf.write(
                     os.path.join(
                         ins_root,
-                        "instrument_{}_{}.{}".format(name, self.data["agg"], format),
+                        "vocal_{}_{}.{}".format(name, self.data["agg"], format),
                     ),
                     (np.array(wav_instrument) * 32768).astype("int16"),
                     self.mp.param["sr"],
                 )  #
             else:
                 path = os.path.join(
-                    ins_root, "instrument_{}_{}.wav".format(name, self.data["agg"])
+                    ins_root, "vocal_{}_{}.wav".format(name, self.data["agg"])
                 )
                 sf.write(
                     path,
@@ -343,14 +344,14 @@ class AudioPreDeEcho:
                 sf.write(
                     os.path.join(
                         vocal_root,
-                        "vocal_{}_{}.{}".format(name, self.data["agg"], format),
+                        "instrument_{}_{}.{}".format(name, self.data["agg"], format),
                     ),
                     (np.array(wav_vocals) * 32768).astype("int16"),
                     self.mp.param["sr"],
                 )
             else:
                 path = os.path.join(
-                    vocal_root, "vocal_{}_{}.wav".format(name, self.data["agg"])
+                    vocal_root, "instrument_{}_{}.wav".format(name, self.data["agg"])
                 )
                 sf.write(
                     path,
