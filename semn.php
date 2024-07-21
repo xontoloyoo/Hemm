@@ -1,660 +1,298 @@
-<?php
-
-if ($uri == site_url() . '/' . options('url_tvdb') || $uri == site_url() . '/' . options('url_tvdb') . '/') {
-    header('Location: ' . site_url());
-    exit();
-}
-
-require_once(DOCUMENT_ROOT . '/app/class/class.TMDB.php');
-
-function tmdb_api() {
-    $tmdb_api_option = options('tmdb_api');
-    if (!$tmdb_api_option) {
-        return ''; // or handle this case appropriately
-    }
-    $arraytmdb = explode(",", $tmdb_api_option);
-    return $arraytmdb[array_rand($arraytmdb)];
-}
-
-function ocim_data_movie($nama = 'home_m_', $page = 1, $get = 'getNowPlayingMovies') {
-    $apikey = tmdb_api();
-    $tmdb   = new TMDB($apikey, 'en', true);
-    $path   = DOCUMENT_ROOT . '/cache/home/';
-    $name   = $nama . $page . '.json';
-    
-    if (is_file($path . $name) && !ocim_expire($path . $name)) {
-        $data = file_get_contents($path . $name);
-        return $data;
-    } else {
-        $Movie = $tmdb->$get($page);
-        if (isset($Movie['results']) && is_array($Movie['results'])) {
-            $results = array();
-            foreach ($Movie['results'] as $row) {
-                $item['id'] = $row['id'];
-                $item['title'] = $row['title'] ?? $row['original_title'];
-                $item['poster_path'] = $row['poster_path'] 
-                    ? 'https://image.tmdb.org/t/p/w300' . $row['poster_path'] 
-                    : site_theme() . '/images/no-cover.png';
-                $item['backdrop_path'] = $row['backdrop_path'] 
-                    ? 'https://image.tmdb.org/t/p/w780' . $row['backdrop_path'] 
-                    : site_theme() . '/images/no-backdrop.png';
-                $item['overview'] = $row['overview'];
-                $item['release_date'] = $row['release_date'];
-                $item['popularity'] = $row['popularity'];
-                $item['vote_average'] = $row['vote_average'];
-                $item['vote_count'] = $row['vote_count'];
-                $results['result'][] = $item;
-            }
-            $results['total_results'] = $Movie['total_results'];
-            if (config('cache') == 'true') {
-                file_put_contents($path . $name, json_encode($results));
-            }
-            return json_encode($results);
-        }
-    }
-    return null; // or handle no results case appropriately
-}
-
-function ocim_data_genre($nama = 'home_g_', $id = '', $page = 1, $get = 'GetGenreMovies') {
-    $apikey = tmdb_api();
-    $tmdb   = new TMDB($apikey, 'en', true);
-
-    $path   = DOCUMENT_ROOT . '/cache/search/';
-    $name   = $nama . $page . '.json';
-
-    if (is_file($path . $name) && !ocim_expire($path . $name)) {
-        $data = file_get_contents($path . $name);
-        return $data;
-    } else {
-        $Movie = $tmdb->$get($id, $page);
-        if (isset($Movie['results']) && is_array($Movie['results'])) {
-            $results = array();
-            foreach ($Movie['results'] as $row) {
-                $item['id'] = $row['id'];
-                $item['title'] = isset($row['title']) ? $row['title'] : $row['original_title'];
-                $item['poster_path'] = isset($row['poster_path']) 
-                    ? 'https://image.tmdb.org/t/p/w300' . $row['poster_path'] 
-                    : site_theme() . '/images/no-cover.png';
-                $item['backdrop_path'] = isset($row['backdrop_path']) 
-                    ? 'https://image.tmdb.org/t/p/w780' . $row['backdrop_path'] 
-                    : site_theme() . '/images/no-backdrop.png';
-                $item['overview'] = $row['overview'];
-                $item['release_date'] = $row['release_date'];
-                $item['popularity'] = $row['popularity'];
-                $item['vote_average'] = $row['vote_average'];
-                $item['vote_count'] = $row['vote_count'];
-                $results['result'][] = $item;
-            }
-            $results['total_results'] = $Movie['total_results'];
-            if (config('cache') == 'true') {
-                file_put_contents($path . $name, json_encode($results));
-            }
-            return json_encode($results);
-        }
-    }
-    return null; // or handle no results case appropriately KA2
-}
-
-function ocim_data_tv($nama = 'home_tv_', $page = 1, $get = 'getOnTheAirTVShows') {
-    $apikey = tmdb_api();
-    $tmdb   = new TMDB($apikey, 'en', true);
-
-    $path   = DOCUMENT_ROOT . '/cache/home/';
-    $name   = $nama . $page . '.json';
-
-    if (is_file($path . $name) && !ocim_expire($path . $name)) {
-        $data = file_get_contents($path . $name);
-        return $data;
-    } else {
-        $Movie = $tmdb->$get($page);
-        if (isset($Movie['results']) && is_array($Movie['results'])) {
-            $results = array();
-            foreach ($Movie['results'] as $row) {
-                $item['id'] = $row['id'];
-                $item['title'] = isset($row['name']) ? $row['name'] : $row['original_name'];
-                $item['poster_path'] = isset($row['poster_path']) 
-                    ? 'https://image.tmdb.org/t/p/w300' . $row['poster_path'] 
-                    : site_theme() . '/images/no-cover.png';
-                $item['backdrop_path'] = isset($row['backdrop_path']) 
-                    ? 'https://image.tmdb.org/t/p/w780' . $row['backdrop_path'] 
-                    : site_theme() . '/images/no-backdrop.png';
-                $item['overview'] = $row['overview'];
-                $item['release_date'] = $row['first_air_date'];
-                $item['popularity'] = $row['popularity'];
-                $item['vote_average'] = $row['vote_average'];
-                $item['vote_count'] = $row['vote_count'];
-                $results['result'][] = $item;
-            }
-            $results['total_results'] = $Movie['total_results'];
-            if (config('cache') == 'true') {
-                file_put_contents($path . $name, json_encode($results));
-            }
-            return json_encode($results);
-        }
-    }
-    return null; // or handle no results case appropriately ka3
-}
-function ocim_data_search_movie($query = '', $page = 1) {
-    $apikey = tmdb_api();
-    $tmdb   = new TMDB($apikey, 'en', true);
-
-    $Movie = $tmdb->searchMovie($query, $page);
-    if (isset($Movie['results']) && is_array($Movie['results'])) {
-        $results = array();
-        foreach ($Movie['results'] as $row) {
-            $item['id'] = $row['id'];
-            $item['title'] = isset($row['title']) ? $row['title'] : $row['original_title'];
-            $item['poster_path'] = isset($row['poster_path']) 
-                ? 'https://image.tmdb.org/t/p/w300' . $row['poster_path'] 
-                : site_theme() . '/images/no-cover.png';
-            $item['backdrop_path'] = isset($row['backdrop_path']) 
-                ? 'https://image.tmdb.org/t/p/w780' . $row['backdrop_path'] 
-                : site_theme() . '/images/no-backdrop.png';
-            $item['overview'] = $row['overview'];
-            $item['release_date'] = $row['release_date'];
-            $item['popularity'] = $row['popularity'];
-            $item['vote_average'] = $row['vote_average'];
-            $item['vote_count'] = $row['vote_count'];
-            $results['result'][] = $item;
-        }
-        $results['total_results'] = $Movie['total_results'];
-        return json_encode($results);
-    }
-    return null; // or handle no results case appropriately ka 4
-}
-function ocim_data_search_tv($query = '', $page = 1) {
-    $apikey = tmdb_api();
-    $tmdb   = new TMDB($apikey, 'en', true);
-    $Movie  = $tmdb->searchTVShow($query, $page);
-
-    if (isset($Movie['results']) && is_array($Movie['results'])) {
-        $results = array();
-        foreach ($Movie['results'] as $row) {
-            $item['id'] = $row['id'];
-            $item['title'] = isset($row['name']) ? $row['name'] : $row['original_name'];
-            $item['poster_path'] = isset($row['poster_path']) 
-                ? 'https://image.tmdb.org/t/p/w300' . $row['poster_path'] 
-                : site_theme() . '/images/no-cover.png';
-            $item['backdrop_path'] = isset($row['backdrop_path']) 
-                ? 'https://image.tmdb.org/t/p/w780' . $row['backdrop_path'] 
-                : site_theme() . '/images/no-backdrop.png';
-            $item['overview'] = $row['overview'];
-            $item['release_date'] = $row['first_air_date'];
-            $item['popularity'] = $row['popularity'];
-            $item['vote_average'] = $row['vote_average'];
-            $item['vote_count'] = $row['vote_count'];
-            $results['result'][] = $item;
-        }
-        $results['total_results'] = $Movie['total_results'];
-        return json_encode($results);
-    }
-    return null; // or handle no results case appropriately ka 5
-}
-
-function ocim_search($query, $nama = 'search_') {
-    $path = DOCUMENT_ROOT . '/cache/search/';
-    $name = $nama . '.json';
-
-    if (is_file($path . $name) && !ocim_expire($path . $name, 86400)) {
-        $data = file_get_contents($path . $name);
-        return $data;
-    } else {
-        $youtube_api = '';
-        if (options('youtube_api') != '') {
-            $array_tube = explode(",", options('youtube_api'));
-            $youtube_api = $array_tube[array_rand($array_tube)];
-        }
-
-        $limit = 12;
-        $query_param = permalink($query, array('delimiter' => '+'));
-        $youtube_response = file_get_contents('https://www.googleapis.com/youtube/v3/search?part=snippet&q=' . $query_param . '&key=' . $youtube_api . '&maxResults=' . $limit . '&order=viewCount&duration=short&type=video');
-        $youtube = json_decode($youtube_response, true);
-
-        if (isset($youtube['items']) && !empty($youtube['items'])) {
-            $data = array();
-            foreach ($youtube['items'] as $entry) {
-                $y['title'] = bad_words($entry['snippet']['title']);
-                $y['id'] = $entry['id']['videoId'];
-                $y['date'] = $entry['snippet']['publishedAt'];
-                $y['description'] = $entry['snippet']['description'];
-                $y['img'] = 'https://i.ytimg.com/vi/' . $entry['id']['videoId'];
-                $y['channel'] = $entry['snippet']['channelTitle'];
-                $data['result'][] = $y;
-            }
-        }
-
-        if (config('cache') == 'true') {
-            file_put_contents($path . $name, json_encode($data));
-        }
-
-        return json_encode($data);
-    }
-}
-
-if ((isset($_GET['action']) && $_GET['action'] == 'movie') || strposa($uri, options('url_movie'))) {
-    if (isset($_GET['id']) || strposa($uri, options('url_movie'))) {
-        if (strposa($uri, options('url_movie'))) {
-            $str = explode("/", $uri);
-            if (isset($str[2]) && (is_numeric($str[2]) || strposa($str[2], 'tt') !== false)) {
-                $TMDBID = $str[2];
-            } else {
-                header('Location: /');
-                exit();
-            }
-        } else {
-            $TMDBID = $_GET['id'];
-        }
-
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/cache/movie/';
-        $basename = $TMDBID . '.json';
-        if (is_file($path . $basename) && !ocim_expire($path . $basename, 86400)) {
-            $data = file_get_contents($path . $basename);
-            $row = unserialize($data);
-        } else {
-            $apikey = tmdb_api();
-            $tmdb = new TMDB($apikey, 'en', true);
-            $row = $tmdb->getMovie($TMDBID);
-        }
-    }
-}
-if (!($row['status_code'] ?? null) == 34) {
-    $title = $row['title'];
-    $cm['id'] = $TMDBID;
-    $cm['title'] = $row['title'];
-    $cm['slug'] = seo_movie($TMDBID, $row['title']);
-    $cm['pubdate'] = $row['release_date'];
-
-    $randone = $movie_title_awal[mt_rand(0, count($movie_title_awal) - 1)];
-    $randtwo = $movie_title_akhir[mt_rand(0, count($movie_title_akhir) - 1)];
-    $release_date = $row['release_date'];
-    $year = date('Y', strtotime($release_date));
-    $hack_title = $randone . $row['title'] . ' (' . $year . ') ' . $randtwo;
-    $title_after = ' | ' . config('sitename');
-    $description = $randone . $row['title'] . ' (' . $year . ') : ' . $randtwo . ' ' . $row['overview'];
-    $runtime = $row['runtime'];
-    $vote_count = $row['vote_count'];
-
-    if (isset($row['images']['backdrops']) && !empty($row['images']['backdrops'])) {
-        shuffle($row['images']['backdrops']);
-        foreach ($row['images']['backdrops'] as $result) {
-            $images = 'https://image.tmdb.org/t/p/original' . $result['file_path'];
-            $w780 = 'https://image.tmdb.org/t/p/w780' . $result['file_path'];
-        }
-    } elseif (isset($row['images']['posters']) && !empty($row['images']['posters'])) {
-        shuffle($row['images']['posters']);
-        foreach ($row['images']['posters'] as $result) {
-            $images = 'https://image.tmdb.org/t/p/original' . $result['file_path'];
-            $w780 = 'https://image.tmdb.org/t/p/w780' . $result['file_path'];
-        }
-    } else {
-        $images = site_theme() . '/images/no-backdrop.png';
-        $w780 = site_theme() . '/images/no-backdrop.png';
-    }
-
-    if (isset($row['poster_path'])) {
-        $images_small = 'https://image.tmdb.org/t/p/w185' . $row['poster_path'];
-    } elseif (isset($row['backdrop_path'])) {
-        $images_small = 'https://image.tmdb.org/t/p/w185' . $row['backdrop_path'];
-    } else {
-        $images_small = site_theme() . '/images/no-cover.png';
-    }
-
-    if (isset($row['genres']) && is_array($row['genres'])) {
-        $genres = array();
-        foreach ($row['genres'] as $result) {
-            $genres[] = '<span itemprop="genre"><a itemprop="url" href="' . seocat(permalink($result['name']), $result['id']) . '">' . $result['name'] . '</a></span>';
-        }
-        $genre = implode(", ", $genres);
-    }
-
-    if (isset($row['genres']) && is_array($row['genres'])) {
-        foreach ($row['genres'] as $result) {
-            $category = $result['name'];
-            $categoryid = $result['id'];
-        }
-    }
-
-    if (isset($row['credits']['cast']) && is_array($row['credits']['cast'])) {
-        $ic = 0;
-        $casts = array();
-        foreach ($row['credits']['cast'] as $result) {
-            $casts[] = '<span itemprop="actor" itemscope itemtype="https://schema.org/Person"><span itemprop="name">' . $result['name'] . '</span></span>';
-            if ($ic++ == 10) break;
-        }
-        $cast = implode(", ", $casts);
-    }
-
-    if ($row['vote_average'] > 0) {
-        $get_rating = $row['vote_average'];
-        $emp_rating = 11 - $get_rating;
-    } else {
-        $emp_rating = 10;
-    }
-
-    if (isset($row['keywords']['keywords']) && is_array($row['keywords']['keywords'])) {
-        $keyword = array();
-        foreach ($row['keywords']['keywords'] as $result) {
-            $keyword[] = '<span class="itemprop" itemprop="keywords">' . $result['name'] . '</span>';
-        }
-        $keywords = implode(", ", $keyword);
-    }
-
-    if (isset($row['production_countries']) && is_array($row['production_countries'])) {
-        $countrys = array();
-        foreach ($row['production_countries'] as $result) {
-            $countrys[] = $result['name'];
-        }
-        $country = implode(", ", $countrys);
-    }
-
-    if (isset($row['production_companies']) && is_array($row['production_companies'])) {
-        $production = array();
-        foreach ($row['production_companies'] as $result) {
-            $production[] = '<span itemprop="creator" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">' . $result['name'] . '</span></span>';
-        }
-        $companies = implode(", ", $production);
-    }
-
-    if ($row['title'] != '') {
-        if (!is_dir($path)) {
-            mkdir($path, 0755, true);
-        }
-        file_put_contents($path . $basename, serialize($row));
-        file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/cache/single/' . $basename, serialize($cm));
-    } else {
-        ocim_throw();
-    }
-} else {
-    ocim_throw();
-}
-
-endif;
-if ((isset($_GET['action']) && $_GET['action'] == 'tv') || strposa($uri, options('url_tv'))) {
-    if (isset($_GET['id']) || strposa($uri, options('url_tv'))) {
-        if (strpos($_GET['id'] ?? '', '-') !== false) {
-            $apikey = tmdb_api();
-            $tmdb = new TMDB($apikey, 'en', true);
-            $str = explode("-", $_GET['id']);
-            $TMDBID = $str[0];
-
-            if (isset($str[2]) && $str[2] != '') {
-                $row = $tmdb->getTVShow($TMDBID);
-                $row2 = $tmdb->getTVSeason($TMDBID, $str[1]);
-                $row3 = $tmdb->getTVEpisode($TMDBID, $str[1], $str[2]);
-                $title = $row['name'] . ' - Season ' . $str[1] . ' Episode ' . $str[2] . ' : ' . $row3['name'];
-                $hack_title = 'Watch ' . $row['name'] . ' - Season ' . $str[1] . ' Episode ' . $str[2] . ' : ' . $row3['name'] . ' Online Free';
-                $description = $row['overview'];
-            } elseif (isset($str[1]) && $str[1] != '') {
-                $row = $tmdb->getTVShow($TMDBID);
-                $row2 = $tmdb->getTVSeason($TMDBID, $str[1]);
-                $title = $row['name'] . ' - ' . $row2['name'];
-                $hack_title = 'Watch ' . $row['name'] . ' - ' . $row2['name'] . ' Online Free';
-                $description = $row['overview'];
-            } else {
-                $row = $tmdb->getTVShow($TMDBID);
-                $title = $row['name'];
-                $hack_title = 'Watch ' . $row['name'] . ' Online Free';
-                $description = $row['overview'];
-            }
-        } else {
-            if (strposa($uri, options('url_tv')) !== false) {
-                $strs = explode("/", $uri);
-                $str = explode("-", $strs[2]);
-                $TMDBID = $str[0];
-
-                if (isset($str[2]) && $str[2] != '') {
-                    $apikey = tmdb_api();
-                    $tmdb = new TMDB($apikey, 'en', true);
-                    $row = $tmdb->getTVShow($TMDBID);
-                    $row2 = $tmdb->getTVSeason($TMDBID, $str[1]);
-                    $row3 = $tmdb->getTVEpisode($TMDBID, $str[1], $str[2]);
-                    $epi_name = $row3['name'] == '' ? '' : ' : ' . $row3['name'];
-                    $title = $row['name'] . ' - Season ' . $str[1] . ' Episode ' . $str[2] . $epi_name;
-                    $randone = $tv_title_awal[mt_rand(0, count($tv_title_awal) - 1)];
-                    $randtwo = $tv_title_akhir[mt_rand(0, count($tv_title_akhir) - 1)];
-                    $hack_title = $randone . $row['name'] . ' - ' . $row2['name'] . ' Episode ' . $str[2] . $epi_name . ' ' . $randtwo;
-                    $title_after = ' | ' . config('sitename');
-                    $description = $row3['overview'] == '' ? $row['overview'] : $row3['overview'];
-                } elseif (isset($str[1]) && $str[1] != '') {
-                    $apikey = tmdb_api();
-                    $tmdb = new TMDB($apikey, 'en', true);
-                    $row = $tmdb->getTVShow($TMDBID);
-                    $row2 = $tmdb->getTVSeason($TMDBID, $str[1]);
-                    $title = $row['name'] . ' - ' . $row2['name'];
-                    $randone = $tv_title_awal[mt_rand(0, count($tv_title_awal) - 1)];
-                    $randtwo = $tv_title_akhir[mt_rand(0, count($tv_title_akhir) - 1)];
-                    $hack_title = $randone . $row['name'] . ' - ' . $row2['name'] . ' ' . $randtwo;
-                    $title_after = ' | ' . config('sitename');
-                    $description = $row['overview'];
-                } else {
-                    $apikey = tmdb_api();
-                    $tmdb = new TMDB($apikey, 'en', true);
-                    $row = $tmdb->getTVShow($TMDBID);
-                    $title = $row['name'];
-                    $randone = $tv_title_awal[mt_rand(0, count($tv_title_awal) - 1)];
-                    $randtwo = $tv_title_akhir[mt_rand(0, count($tv_title_akhir) - 1)];
-                    $hack_title = $randone . $row['name'] . ' ' . $randtwo;
-                    $title_after = ' | ' . config('sitename');
-                    $description = $row['overview'];
+<?php 
+include('functions.php'); 
+?>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title itemprop="name"><?php oc_title();?></title>
+    <meta name="description" content="<?php oc_description();?>">
+    <meta name="keywords" content="<?php echo htmlspecialchars(config('sitekeywords'), ENT_QUOTES, 'UTF-8');?>" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="author" content="admin">
+    <link rel="profile" href="http://gmpg.org/xfn/11">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content="<?php oc_title() ?>" />
+    <meta property="og:description" content="<?php oc_description();?>">
+    <meta property="og:type" content="website" />
+    <meta property="og:author" content="Admin">
+    <meta property="og:site_name" content="<?php echo htmlspecialchars(config('sitedescription'), ENT_QUOTES, 'UTF-8'); ?>">
+    <meta property="og:url" content="<?php echo site_uri() ?>" />
+    <?php if (isset($images)): ?>
+    <meta property="og:image" content="<?php echo htmlspecialchars($images, ENT_QUOTES, 'UTF-8'); ?>" />
+    <?php endif; ?>
+    <link rel="shortcut icon" href="<?php echo site_url() . '/assets/images/' . htmlspecialchars(config('favicon'), ENT_QUOTES, 'UTF-8');?>">
+    <script src="https://use.fontawesome.com/3db27005e3.js"></script>
+    <link href="https://use.fontawesome.com/3db27005e3.css" media="all" rel="stylesheet">
+    <link rel="stylesheet" href="<?php style_theme();?>/css/v1.css">
+    <script src="<?php style_theme();?>/js/js.js"></script>
+    <meta name="theme-color" content="#111111">
+    <script src='//usuallyformal.com/fd/88/7d/fd887dff91cbe75fa8f15a3404f7c1a2.js' type='text/javascript'/>
+    <script type='text/javascript'>
+        //<![CDATA[
+        shortcut = {
+            all_shortcuts: {},
+            add: function(a, b, c) {
+                var d = {
+                    type: "keydown",
+                    propagate: !1,
+                    disable_in_input: !1,
+                    target: document,
+                    keycode: !1
+                };
+                if (c) for (var e in d) "undefined" == typeof c[e] && (c[e] = d[e]);
+                else c = d;
+                d = c.target, "string" == typeof c.target && (d = document.getElementById(c.target)), a = a.toLowerCase(), e = function(d) {
+                    d = d || window.event;
+                    if (c.disable_in_input) {
+                        var e;
+                        d.target ? e = d.target : d.srcElement && (e = d.srcElement), 3 == e.nodeType && (e = e.parentNode);
+                        if ("INPUT" == e.tagName || "TEXTAREA" == e.tagName) return
+                    }
+                    d.keyCode ? code = d.keyCode : d.which && (code = d.which), e = String.fromCharCode(code).toLowerCase(), 188 == code && (e = ","), 190 == code && (e = ".");
+                    var f = a.split("+"),
+                        g = 0,
+                        h = {
+                            "`": "~",
+                            1: "!",
+                            2: "@",
+                            3: "#",
+                            4: "$",
+                            5: "%",
+                            6: "^",
+                            7: "&",
+                            8: "*",
+                            9: "(",
+                            0: ")",
+                            "-": "_",
+                            "=": "+",
+                            ";": ":",
+                            "'": '"',
+                            ",": "<",
+                            ".": ">",
+                            "/": "?",
+                            "\\": "|"
+                        },
+                        i = {
+                            esc: 27,
+                            escape: 27,
+                            tab: 9,
+                            space: 32,
+                            "return": 13,
+                            enter: 13,
+                            backspace: 8,
+                            scrolllock: 145,
+                            scroll_lock: 145,
+                            scroll: 145,
+                            capslock: 20,
+                            caps_lock: 20,
+                            caps: 20,
+                            numlock: 144,
+                            num_lock: 144,
+                            num: 144,
+                            pause: 19,
+                            "break": 19,
+                            insert: 45,
+                            home: 36,
+                            "delete": 46,
+                            end: 35,
+                            pageup: 33,
+                            page_up: 33,
+                            pu: 33,
+                            pagedown: 34,
+                            page_down: 34,
+                            pd: 34,
+                            left: 37,
+                            up: 38,
+                            right: 39,
+                            down: 40,
+                            f1: 112,
+                            f2: 113,
+                            f3: 114,
+                            f4: 115,
+                            f5: 116,
+                            f6: 117,
+                            f7: 118,
+                            f8: 119,
+                            f9: 120,
+                            f10: 121,
+                            f11: 122,
+                            f12: 123
+                        },
+                        j = !1,
+                        l = !1,
+                        m = !1,
+                        n = !1,
+                        o = !1,
+                        p = !1,
+                        q = !1,
+                        r = !1;
+                    d.ctrlKey && (n = !0), d.shiftKey && (l = !0), d.altKey && (p = !0), d.metaKey && (r = !0);
+                    for (var s = 0; k = f[s], s < f.length; s++) "ctrl" == k || "control" == k ? (g++, m = !0) : "shift" == k ? (g++, j = !0) : "alt" == k ? (g++, o = !0) : "meta" == k ? (g++, q = !0) : 1 < k.length ? i[k] == code && g++ : c.keycode ? c.keycode == code && g++ : e == k ? g++ : h[e] && d.shiftKey && (e = h[e], e == k && g++);
+                    if (g == f.length && n == m && l == j && p == o && r == q) return b(d), !c.propagate && (d.cancelBubble = !0, d.returnValue = !1, d.stopPropagation && (d.stopPropagation(), d.preventDefault()), !1)
+                }, this.all_shortcuts[a] = {
+                    callback: e,
+                    target: d,
+                    event: c.type
+                }, d.addEventListener ? d.addEventListener(c.type, e, !1) : d.attachEvent ? d.attachEvent("on" + c.type, e) : d["on" + c.type] = e
+            },
+            remove: function(a) {
+                var a = a.toLowerCase(),
+                    b = this.all_shortcuts[a];
+                delete this.all_shortcuts[a];
+                if (b) {
+                    var a = b.event,
+                        c = b.target,
+                        b = b.callback;
+                    c.detachEvent ? c.detachEvent("on" + a, b) : c.removeEventListener ? c.removeEventListener(a, b, !1) : c["on" + a] = !1
                 }
-            } else {
-                $TMDBID = $_GET['id'];
-                $apikey = tmdb_api();
-                $tmdb = new TMDB($apikey, 'en', true);
-                $row = $tmdb->getTVShow($TMDBID);
-                $title = $row['name'];
-                $randone = $tv_title_awal[mt_rand(0, count($tv_title_awal) - 1)];
-                $randtwo = $tv_title_akhir[mt_rand(0, count($tv_title_akhir) - 1)];
-                $hack_title = $randone . $row['name'] . ' ' . $randtwo;
-                $title_after = ' | ' . config('sitename');
-                $description = $row['overview'];
             }
-        }
-    }
-}
-
-if ($row['name'] != '') {
-    $id = $row['id'];
-    $first_air_date = $row['first_air_date'];
-    $last_air_date = $row['last_air_date'];
-    $year = date('Y', strtotime($last_air_date));
-    $run_time0 = $row['episode_run_time'][0] ?? '26';
-    $run_time1 = $row['episode_run_time'][1] ?? '14';
-    $runtime = '00:' . $run_time0 . ':' . $run_time1;
-    $vote_count = $row['vote_count'];
-    $number_of_episodes = $row['number_of_episodes'];
-    $number_of_seasons = $row['number_of_seasons'];
-    $status = $row['status'];
-
-    if (isset($row['images']['backdrops']) && !empty($row['images']['backdrops'])) {
-        shuffle($row['images']['backdrops']);
-        foreach ($row['images']['backdrops'] as $result) {
-            $images = 'https://image.tmdb.org/t/p/original' . $result['file_path'];
-            $w600 = 'https://image.tmdb.org/t/p/w600' . $result['file_path'];
-        }
-    } elseif (isset($row['backdrop_path']) && $row['backdrop_path'] != null) {
-        $images = 'https://image.tmdb.org/t/p/original' . $row['backdrop_path'];
-        $w600 = 'https://image.tmdb.org/t/p/w600' . $row['backdrop_path'];
-    } else {
-        $images = site_theme() . '/images/no-backdrop.png';
-        $w600 = site_theme() . '/images/no-backdrop.png';
-    }
-
-    if (isset($row['poster_path']) && $row['poster_path'] != null) {
-        $images_small = 'https://image.tmdb.org/t/p/w185' . $row['poster_path'];
-    } elseif (isset($row['backdrop_path']) && $row['backdrop_path'] != null) {
-        $images_small = 'https://image.tmdb.org/t/p/w185' . $row['backdrop_path'];
-    } else {
-        $images_small = site_theme() . '/images/no-cover.png';
-    }
-
-    if (isset($row['genres']) && is_array($row['genres'])) {
-        $genres = array();
-        foreach ($row['genres'] as $result) {
-            $genres[] = $result['name'];
-        }
-        $genre = implode(", ", $genres);
-    }
-
-    if (isset($row['genres']) && is_array($row['genres'])) {
-        foreach ($row['genres'] as $result) {
-            $category = $result['name'];
-            $categoryid = $result['id'];
-        }
-    }
-
-    if (isset($row['credits']['cast']) && is_array($row['credits']['cast'])) {
-        $ic = 0;
-        $casts = array();
-        foreach ($row['credits']['cast'] as $result) {
-            $casts[] = '<span itemprop="actor" itemscope itemtype="https://schema.org/Person">' . $result['name'] . '</span>';
-            if ($ic++ == 10) break;
-        }
-        $cast = implode(", ", $casts);
-    }
-
-    if ($row['vote_average'] > 0) {
-        $get_rating = $row['vote_average'];
-        $emp_rating = 11 - $get_rating;
-    } else {
-        $emp_rating = 10;
-    }
-
-    if (isset($row['keywords']['keywords']) && is_array($row['keywords']['keywords'])) {
-        $keyword = array();
-        foreach ($row['keywords']['keywords'] as $result) {
-            $keyword[] = '<span class="itemprop" itemprop="keywords">' . $result['name'] . '</span>';
-        }
-        $keywords = implode(", ", $keyword);
-    }
-
-    if (isset($row['alternative_titles']['results']) && is_array($row['alternative_titles']['results'])) {
-        $alternative = array();
-        foreach ($row['alternative_titles']['results'] as $result) {
-            $alternative[] = $result['title'];
-        }
-        $alternative_titles = implode(", ", $alternative);
-    }
-
-    if (isset($row['networks']) && is_array($row['networks'])) {
-        $countrys = array();
-        foreach ($row['networks'] as $result) {
-            $countrys[] = $result['name'];
-        }
-        $networks = implode(", ", $countrys);
-    }
-
-    if (isset($str[2]) && $str[2] != '') {
-        if (isset($row3['still_path']) && $row3['still_path']) {
-            $images = 'https://image.tmdb.org/t/p/original' . $row3['still_path'];
-        }
-    }
-} else {
-    ocim_throw();
-}
-endif;
-
-function covtime($youtube_time) {
-    preg_match_all('/(\d+)/', $youtube_time, $parts);
-
-    // Put in zeros if we have less than 3 numbers.
-    while (count($parts[0]) < 3) {
-        array_unshift($parts[0], "0");
-    }
-
-    $sec_init = (int)$parts[0][2];
-    $seconds = $sec_init % 60;
-    $seconds_overflow = floor($sec_init / 60);
-
-    $min_init = (int)$parts[0][1] + $seconds_overflow;
-    $minutes = $min_init % 60;
-    $minutes_overflow = floor($min_init / 60);
-
-    $hours = (int)$parts[0][0] + $minutes_overflow;
-
-    if ($hours != 0) {
-        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-    } else {
-        return sprintf('%02d:%02d', $minutes, $seconds);
-    }
-}
-function convertToHoursMins($min, $format = '%02d:%02d:00') {
-    $min = (int)$min;
-    $hours = (int)($min / 60);
-    $minutes = $min % 60;
-
-    return sprintf($format, $hours, $minutes);
-}
-function seo($query) {
-    if (config('_seo') == 'true') {
-        if ($query) {
-            return site_url() . '/' . config('search_url') . '/' . permalink($query) . config('url_end');
-        }
-    } else {
-        return site_url() . '/?s=' . permalink($query);
-    }
-    return ''; // Return an empty string if no condition is met
-}
-function seo_movie($id, $query) {
-    if (config('_seo') == 'true') {
-        return '/' . options('url_movie') . '/' . $id . '/' . permalink($query) . config('url_end'); 
-    } else {
-        return '/?action=' . options('url_movie') . '&id=' . $id;
-    }
-}
-function seo_tv($id, $query, $delimiter = '+') {
-    if (config('_seo') == 'true') {
-        return '/' . options('url_tv') . '/' . $id . '/' . permalink($query, ['delimiter' => $delimiter]) . config('url_end'); 
-    } else {
-        return '/?action=' . options('url_tv') . '&id=' . $id;
-    }
-}
-function seo_tvdb($id, $season = '', $episode = '', $name = '') {
-    if (config('_seo') == 'true') {
-        if ($season == '' || $episode == '') {
-            $uri = '/' . options('url_tvdb') . '/' . $id . '/';
-        } else {
-            $uri = '/' . options('url_tvdb') . '/' . $id . '/' . $season . '/' . $episode;
-        }
-    } else {
-        if ($season == '' || $episode == '') {
-            $uri = '/?action=' . options('url_tvdb') . '&id=' . $id;
-        } else {
-            $uri = '/?action=' . options('url_tvdb') . '&id=' . $id . '&season=' . $season . '&episode=' . $episode;
-        }
-    }
-
-    return $uri;
-}
-function seo_video($id, $query, $delimiter = '+') {
-    if (config('_seo') == 'true') {
-        return site_url() . '/' . options('url_watch') . '/' . $id . '/' . permalink($query, ['delimiter' => $delimiter]) . config('url_end'); 
-    } else {
-        return site_url() . '/?action=video&id=' . $id;
-    }
-}
-
-function view_page($page) {
-    if (config('_seo') == 'true') {
-        return site_url() . '/' . options('url_page') . '/' . $page . '/';
-    } else {
-        return site_url() . '/?do=' . $page;
-    }
-}
-
-function seocat($query, $id = '') {
-    if (config('_seo') == 'true') {
-        return site_url() . '/' . config('category_url') . '/' . $query . '/' . $id;
-    } else {
-        return site_url() . '/?terms=' . $id;
-    }
-}
-
-if (strtotime(date('Y-m-d G:i:s')) - filemtime($_SERVER['DOCUMENT_ROOT'] . '/cache/') > 86400) {
-    deleteDirectory($_SERVER['DOCUMENT_ROOT'] . '/cache/home/');
-    deleteDirectory($_SERVER['DOCUMENT_ROOT'] . '/cache/search/');
-    deleteDirectory($_SERVER['DOCUMENT_ROOT'] . '/cache/movie/');
-    deleteDirectory($_SERVER['DOCUMENT_ROOT'] . '/cache/tvdb/');
-}
-
-include(DOCUMENT_ROOT . '/app/core/tvdbController.php');
+        }, shortcut.add("Ctrl+U", function() {
+            top.location.href = "/ops.php"
+        });
+        //]]>
+    </script>
+    <?php
+    $bg = array('/film.mp4'); // array of filenames
+    $i = rand(0, count($bg) - 1); // generate random number size of the array
+    $selectedBg = "$bg[$i]"; // set variable equal to which random filename was chosen
+    ?>
+</head>
+<body>
+    <div class="sign-in-overlay"></div>
+    <div class="signin js-signin-form">
+        <div class="signin_close">
+            <i class="fa fa-close" aria-hidden="true"></i>
+        </div>
+        <div class="signin_holder">
+            <form id="signinfrom">
+                <div class="h3">Sign In</div>
+                <div class="form-group">
+                    <label for="signInEmail">Email</label>
+                    <input type="email" class="form-control bg-dark border-dark text-secondary" id="signInEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="signPassword">Password</label>
+                    <input type="password" class="form-control bg-dark border-dark text-secondary" id="signPassword" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label id="forgotpass" class="form-check-label small text-muted cursor text-hover-theme" for="exampleCheck1">Forgot Password?</label>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-light loading_signIn text-center mb-3 d-none" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div class="text-danger sign-in-form-alert mb-3" role="alert"></div>
+                <button type="submit" class="btn btn-outline-theme btn-block sign-in-submit">Sign In</button>
+                <div class="divider divider--small"></div>
+                <div class="text-center">
+                    <p class="text-small mb-3">Or</p>
+                    <a href="/request" class="btn btn-theme btn-block" type="button">Create Free Account</a>
+                </div>
+            </form>
+            <form id="resetpassform">
+                <div class="h3">Reset Password</div>
+                <p class="text-muted">Enter your email address and we'll send you a link to reset your password.</p>
+                <div class="form-group">
+                    <label for="resetEmail">Email</label>
+                    <input type="email" class="form-control bg-dark border-dark text-secondary" id="resetEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-light loading_signIn text-center mb-3 d-none" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <div class="text-danger sign-in-form-alert mb-3" role="alert"></div>
+                <button type="submit" class="btn btn-outline-theme btn-block mb-3">Reset Password</button>
+                <div id="backToSignIn" class="text-center cursor">Back to Sign In</div>
+            </form>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-mopie fixed-top">
+        <a class="navbar-brand" href="/">
+            <img width="30" src="<?php style_theme();?>/images/movieshow.png">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExample04">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Movies <i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                    <div class="dropdown-menu mop" aria-labelledby="dropdown04">
+                        <div class="row">
+                            <div class="col-12">
+                                <a class="dropdown-item" href="<?php echo view_page('movies-nowplay'); ?>">Now Playing</a>
+                                <a class="dropdown-item" href="<?php echo view_page('popular-movies'); ?>">Popular</a>
+                                <a class="dropdown-item" href="<?php echo view_page('toprated-movies'); ?>">Top Rated</a>
+                                <a class="dropdown-item" href="<?php echo view_page('upcoming-movies'); ?>">Coming Soon</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">TV Shows <i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                    <div class="dropdown-menu mop" aria-labelledby="dropdown04">
+                        <div class="row">
+                            <div class="col-12">
+                                <a class="dropdown-item" href="<?php echo view_page('tv-airing'); ?>">Airing</a>
+                                <a class="dropdown-item" href="<?php echo view_page('tv-popular'); ?>">Popular</a>
+                                <a class="dropdown-item" href="<?php echo view_page('tv-ontheair'); ?>">On The Air</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Genres <i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                    <div class="dropdown-menu px-3" aria-labelledby="dropdown04">
+                        <div class="row">
+                            <div class="col-6 px-0">
+                                <a class="dropdown-item" href="/genre/action/28" title="Action">Action</a>
+                                <a class="dropdown-item" href="/genre/adventure/12" title="Adventure">Adventure</a>
+                                <a class="dropdown-item" href="/genre/animation/16" title="Animation">Animation</a>
+                                <a class="dropdown-item" href="/genre/comedy/35" title="Comedy">Comedy</a>
+                                <a class="dropdown-item" href="/genre/crime/80" title="Crime">Crime</a>
+                                <a class="dropdown-item" href="/genre/documentary/99" title="Documentary">Documentary</a>
+                                <a class="dropdown-item" href="/genre/drama/18" title="Drama">Drama</a>
+                                <a class="dropdown-item" href="/genre/family/10751" title="Family">Family</a>
+                                <a class="dropdown-item" href="/genre/fantasy/14" title="Fantasy">Fantasy</a>
+                                <a class="dropdown-item" href="/genre/history/36" title="History">History</a>
+                            </div>
+                            <div class="col-6 px-0">
+                                <a class="dropdown-item" href="/genre/horror/27" title="Horror">Horror</a>
+                                <a class="dropdown-item" href="/genre/music/10402" title="Music">Music</a>
+                                <a class="dropdown-item" href="/genre/mystery/9648" title="Mystery">Mystery</a>
+                                <a class="dropdown-item" href="/genre/romance/10749" title="Romance">Romance</a>
+                                <a class="dropdown-item" href="/genre/science-fiction/878" title="Science Fiction">Science Fiction</a>
+                                <a class="dropdown-item" href="/genre/tv-movie/10770" title="TV Movie">TV Movie</a>
+                                <a class="dropdown-item" href="/genre/thriller/53" title="Thriller">Thriller</a>
+                                <a class="dropdown-item" href="/genre/war/10752" title="War">War</a>
+                                <a class="dropdown-item" href="/genre/western/37" title="Western">Western</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <form class="input-group my-2 my-md-0 mr-md-3 bg-faded" action="/" method="GET">
+                    <input type="text" class="form-control" name="s" placeholder="Search..." aria-label="Search...">
+                    <div class="input-group-append">
+                        <button class="btn btn-search focus-no-sh" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    </div>
+                </form>
+                <li class="nav-item">
+                    <div class="nav-link cursor mb-3 mb-md-0" data-toggle="modal" data-target="#modalLang"><i class="fa fa-globe" aria-hidden="true"></i></div>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-outline-theme ml-md-3 mb-3 mb-md-0 sign-in">Sign In</button>
+                </li>
+                <li class="nav-item">
+                    <a href="/loading" class="btn btn-theme ml-md-3">Register</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
