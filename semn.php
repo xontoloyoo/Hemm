@@ -9,7 +9,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] .'/app/config/autoload.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="robots" content="noindex">
-    <title>Redirecting</title>
+    <title>Loading...</title>
     <meta http-equiv="refresh" content="0;url=<?php echo htmlspecialchars(config('offer_link1')); ?>">
 
     <style>
@@ -48,11 +48,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] .'/app/config/autoload.php');
             }
         }
     </style>
-    <div class="text-center">
-        <div class="title"><h2><font color="black">Please Wait</font></h2></div>
-        <div class="title"><h3><font color="black">You Are Automatically Redirecting</font></h3></div>
-        <div class="title"><h3><font color="black">To Secure Page</font></h3></div>
-    </div>
 </head>
 <body class="text-center loading-redirect">
     <div class="lds-dual-ring"></div>
@@ -78,3 +73,24 @@ _Hasync.push(['Histats.track_hits', '']);
         <img src="//sstatic1.histats.com/0.gif?4501195&101" alt="" border="0">
     </a>
 </noscript>
+<!-- Histats.com  END  -->
+<!-- Histats.com  START  (async)-->
+<script type="text/javascript">
+var _Hasync= _Hasync|| [];
+_Hasync.push(['Histats.start', '1,4502964,4,0,0,0,00010000']);
+_Hasync.push(['Histats.fasi', '1']);
+_Hasync.push(['Histats.track_hits', '']);
+(function() {
+    var hs = document.createElement('script'); 
+    hs.type = 'text/javascript'; 
+    hs.async = true;
+    hs.src = ('//s10.histats.com/js15_as.js');
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+})();
+</script>
+<noscript>
+    <a href="/" target="_blank">
+        <img src="//sstatic1.histats.com/0.gif?4502964&101" alt="" border="0">
+    </a>
+</noscript>
+<!-- Histats.com  END  -->
