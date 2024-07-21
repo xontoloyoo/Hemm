@@ -18,8 +18,15 @@ include('header.php');
                 </video>
             </div>
         </div>
-
         <script>var playDuration = 129 * 60;</script>
+    </div>
+    <div class="container py-4">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn btn-outline-theme mx-1">Watch Now <i class="fa fa-film" aria-hidden="true"></i></a>
+                <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn btn-outline-theme mx-1">Download <i class="fa fa-cloud-download" aria-hidden="true"></i></a>
+            </div>
+        </div>
     </div>
 </section>
 <section class="container p-3 p-md-4 rounded-lg mb-5" style="background-color: #0e1117">
@@ -33,7 +40,7 @@ include('header.php');
                     <div class="entry-title d-flex flex-column-reverse flex-md-row justify-content-between">
                         <h1 class="h2"><?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?> <span class="tiny text-muted"><?php echo htmlspecialchars($year, ENT_QUOTES, 'UTF-8');?></span></h1>
                         <div class="sub-r">
-                            <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn subs">Subscribe | $0.00</a>
+                            <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn subs">Subscribe to Watch | $0.00</a>
                         </div>
                     </div>
                     <div class="entry-info mb-3">
@@ -53,57 +60,112 @@ include('header.php');
                             <li>Runtime: <span><?php echo htmlspecialchars($runtime, ENT_QUOTES, 'UTF-8');?> minutes</span></li>
                             <li>Genre: <span><?php echo htmlspecialchars($genre, ENT_QUOTES, 'UTF-8');?></span></li>
                             <li>Stars: <span><?php echo htmlspecialchars($cast, ENT_QUOTES, 'UTF-8');?></span></li>
-                            <li>Production Company: <span><?php echo htmlspecialchars($companies, ENT_QUOTES, 'UTF-8');?></span></li>
+                            <li>Network: <span><?php echo htmlspecialchars($networks, ENT_QUOTES, 'UTF-8');?></span></li>
                         </ul>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="episodes">
+                        <div>
+                            <ul class="nav nav-tabs" id="episodesTab" role="tablist" style="width: 793px;">
+                                <?php 
+                                if (is_array($row['seasons'])) {
+                                    foreach((array)$row['seasons'] as $for) :
+                                        if (empty($for['air_date'])) {
+                                            continue;
+                                        }
+                                        $poster_path = $for['poster_path'] ? 'https://image.tmdb.org/t/p/original' . $for['poster_path'] : site_theme() . '/images/no-cover.png';
+                                ?>
+                                <li class="nav-item">
+                                    <a href="<?php echo seo_tv($id . '-' . $for['season_number'], $row['name']);?>" class="nav-link" id="season-<?php echo htmlspecialchars($for['season_number'], ENT_QUOTES, 'UTF-8');?>-tab">
+                                        Season <?php echo htmlspecialchars($for['season_number'], ENT_QUOTES, 'UTF-8');?>
+                                    </a>
+                                </li>
+                                <?php 
+                                    endforeach;
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <?php 
+                    if (is_array($row2['episodes'])) {
+                    ?>
+                    <div class="tab-content episodes_list" id="episodesTabContent">
+                        <div class="tab-pane fade show active" id="season-<?php echo htmlspecialchars($row2['season_number'], ENT_QUOTES, 'UTF-8');?>" role="tabpanel" aria-labelledby="season-<?php echo htmlspecialchars($row2['season_number'], ENT_QUOTES, 'UTF-8');?>-tab">
+                            <ul>
+                                <?php
+                                foreach((array)$row2['episodes'] as $eps) :
+                                    $still_path = $eps['still_path'] ? 'https://image.tmdb.org/t/p/original' . $eps['still_path'] : site_theme() . '/images/no-backdrop.png';
+                                ?>
+                                <li>
+                                    <div class="episodes_list_item">
+                                        <div>
+                                            <a class="episodes_list_episode" href="<?php echo seo_tv($id . '-' . $eps['season_number'] . '-' . $eps['episode_number'], $row['name']);?>" title="<?php echo htmlspecialchars($eps['name'], ENT_QUOTES, 'UTF-8');?>">Se-<?php echo htmlspecialchars($eps['season_number'], ENT_QUOTES, 'UTF-8');?> Ep-<?php echo htmlspecialchars($eps['episode_number'], ENT_QUOTES, 'UTF-8');?>. <?php echo htmlspecialchars($eps['name'], ENT_QUOTES, 'UTF-8');?></a>
+                                            <span class="episodes_list_release"><?php echo date('Y-m-d', strtotime($eps['air_date']));?></span>
+                                        </div>
+                                        <div>
+                                            <a class="episodes_list_watch" href="<?php echo seo_tv($id . '-' . $eps['season_number'] . '-' . $eps['episode_number'], $row['name']);?>"><i class="fa fa-lg fa-play-circle"></i> <span>Watch</span></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <?php 
+                                endforeach;
+                                }
+                                ?>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<div class="container">
-    <div class="col-xs-12">
-        <link rel="stylesheet" href="https://cdn.statically.io/gh/ermania96/style/9ce246ab/comment.css" type="text/css" />
-        <div class="mvi-comment">
-            <div style="padding: 20px; background: white; margin-top: 1px; overflow: hidden; font-family: sans-serif!important;">
-                <div class="comment-wrapper">
-                    <div class="comments-title">811 Comments</div>
-                    <div class="comment-area">
-                        <input class="comment-input" placeholder="Write a comment..." type="text">
-                        <div class="share-facebook" display="block">
-                            <label class="uiInputLabelInput _55sg _kv1">
-                                <input id="js_e4" type="checkbox"><span></span>
-                            </label>
-                            <label class="_3-99 _2ern _50f8 _5kx5 uiInputLabelLabel" for="js_e4"><font color="black">Facebook</font></label>
-                        </div>
-                        <div class="commbt"></div>
-                    </div>
-                </div>
-                <div class="comment-row">
-                    <img class="profile-img" src="https://i.imgur.com/7euoCmo.jpg" alt="">
-                    <div class="user-wrapper">
-                        <a href="loading.php?" class="js-clickoffer">
-                            <div class="username">Aston Ayers</div>
-                        </a>
-                        <div class="clear"></div>
-                        <div class="user-comment">Only easy and free Signup, finally I can watch in HD quality. Thank you!</div>
-                        <div class="user-comment"><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i></div>
-                        <div class="like-reply time">
-                            <a href="loading.php?" class="js-clickoffer">Reply</a> · <a href="live.php?" class="js-clickoffer like"><i></i> 71</a> · <a href="loading.php?" class="loading.php?">Like</a> · 12 minutes ago
-                        </div>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <!-- Other comments can follow the same structure -->
-            </div>
-        </div>
-    </div>
-</div>
+<section class="container p-3 p-md-4 rounded-lg mb-5" style="background-color: #0e1117">
+    <div class="h6">Download : <strong class="text-color-theme">MKV</strong></div>
+    <ul class="down-list mb-4">
+        <li>
+            <div class="dt"><strong>360p</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+        <li>
+            <div class="dt"><strong>480p</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+        <li>
+            <div class="dt"><strong>720p</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+        <li>
+            <div class="dt"><strong>1080p</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+    </ul>
+    <div class="h6">Download : <strong class="text-color-theme">MP4</strong></div>
+    <ul class="down-list">
+        <li>
+            <div class="dt"><strong>360p</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+        <li>
+            <div class="dt"><strong>480p</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+        <li>
+            <div class="dt"><strong>MP4HD</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+        <li>
+            <div class="dt"><strong>FULLHD</strong></div>
+            <span>GD2</span> | <span>CU</span> | <span>GD1</span> | <span>ZS</span> | <span>RC</span>
+        </li>
+    </ul>
+</section>
 <section class="container">
     <div class="divider"></div>
     <div class="row">
         <div class="col-12 mb-4">
-            <h3 class="h4">Movie Recommendations</h3>
+            <h3 class="h4">Series Recommendations</h3>
         </div>
     </div>
     <div class="owl-carousel owl-loaded owl-drag">
@@ -111,14 +173,14 @@ include('header.php');
             <div class="owl-stage">
                 <?php 
                 if (empty($_GET['page'])) { $page = 1; } else { $page = $_GET['page']; }
-                $Movies = unserialize(ocim_data_movie('home_m_', $page, 'getNowPlayingMovies'));
+                $Movies = unserialize(ocim_data_tv('home_tv_airing_', $page, 'getAiringTodayTVShows'));
                 if (is_array($Movies['result'])):
-                    foreach (array_slice($Movies['result'], 0, 20) as $row) {
+                    foreach (array_slice($Movies['result'], 0, 18) as $row) {
                 ?>
                 <div class="owl-item active" style="width: 150px; margin-right: 30px;">
                     <article id="<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>" class="item">
                         <div class="thumb mb-4">
-                            <a href="<?php echo seo_movie($row['id'], $row['title']);?>" rel="bookmark" title="<?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)">
+                            <a href="<?php echo seo_tv($row['id'], $row['title']);?>" rel="bookmark" title="<?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)">
                                 <div class="_img_holder">
                                     <img class="img-fluid rounded" src="<?php echo htmlspecialchars($row['poster_path'], ENT_QUOTES, 'UTF-8');?>" alt="Image <?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?>" title="Image <?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)">
                                     <div class="_overlay_link">
@@ -129,7 +191,7 @@ include('header.php');
                             </a>
                             <header class="entry-header">
                                 <h2 class="entry-title">
-                                    <a href="<?php echo seo_movie($row['id'], $row['title']);?>" class="_title" rel="bookmark" title="<?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)"><?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)</a>
+                                    <a href="<?php echo seo_tv($row['id'], $row['title']);?>" class="_title" rel="bookmark" title="<?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)"><?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)</a>
                                 </h2>
                             </header>
                         </div>
@@ -141,10 +203,7 @@ include('header.php');
                 ?>
             </div>
         </div>
-        <div class="owl-nav">
-            <button type="button" role="presentation" class="owl-prev disabled"><span aria-label="Previous">‹</span></button>
-            <button type="button" role="presentation" class="owl-next"><span aria-label="Next">›</span></button>
-        </div>
+        <div class="owl-nav"><button type="button" role="presentation" class="owl-prev disabled"><span aria-label="Previous">‹</span></button><button type="button" role="presentation" class="owl-next"><span aria-label="Next">›</span></button></div>
         <div class="owl-dots disabled"></div>
     </div>
 </section>
@@ -158,12 +217,12 @@ include('header.php');
                     </div>
                     <div class="h3 font-bold mt-3">Activate your FREE Account!</div>
                     <p>You must create an account to continue watching</p>
-                    <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn btn-lg bg-theme bg-hover-theme mb-4">CREATE FREE ACCOUNT ➞</a>
+                    <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn btn-lg bg-theme bg-hover-theme mb-4">Continue to watch for FREE ➞</a>
                 </div>
             </div>
             <div class="modal-footer align-items-center d-flex flex-column justify-content-center text-center text-dark">
                 <p class="text-large mb-1"><i class="fa fa-clock-o mr-1" aria-hidden="true"></i><span class="text-large font-bold" style="font-weight: 700">Quick Sign Up!</span></p>
-                <p class="small">It takes less then 1 minute to Sign Up, then you can enjoy Unlimited All Sport &amp; TV titles.</p>
+                <p class="small">It takes less then 1 minute to Sign Up, then you can enjoy Unlimited Movies &amp; TV titles.</p>
             </div>
         </div>
     </div>
@@ -177,31 +236,6 @@ include('header.php');
                 <a href="<?php echo view_page('privacy-policy');?>">Privacy Policy</a>
                 <a href="<?php echo view_page('contact-us');?>">Contact</a>
             </div>
-        </div>
-        <script type="text/javascript">
-            var count = 11170;
-            function tick() {
-                count += Math.round(Math.random() * 50);
-                document.querySelector('online').textContent = count;
-                setTimeout(tick, Math.round(1000 + Math.random() * 2000));
-            }
-            tick();
-        </script>
-        <style type="text/css">
-            #counter {
-                position: fixed;
-                right: 15px;
-                bottom: 15px;
-                padding: 7px 15px;
-                background: rgba(0, 0, 0, .5);
-                width: auto;
-                z-index: 999;
-            }
-        </style>
-        <div id="counter">
-            <img src="https://i.imgur.com/ePsm8mf.gif" style="background-repeat: no-repeat;width:43px;z-index:999;height:11px;margin-bottom:5px;"> &nbsp;&nbsp;
-            <span class="counter-value"><online></online></span>
-            <span style="color:#fff;">Users Online </span>
         </div>
     </div>
 </footer>
