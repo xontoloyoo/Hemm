@@ -1,298 +1,211 @@
-<?php 
-include('functions.php'); 
+<?php
+include('header.php');
 ?>
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title itemprop="name"><?php oc_title();?></title>
-    <meta name="description" content="<?php oc_description();?>">
-    <meta name="keywords" content="<?php echo htmlspecialchars(config('sitekeywords'), ENT_QUOTES, 'UTF-8');?>" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="author" content="admin">
-    <link rel="profile" href="http://gmpg.org/xfn/11">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:title" content="<?php oc_title() ?>" />
-    <meta property="og:description" content="<?php oc_description();?>">
-    <meta property="og:type" content="website" />
-    <meta property="og:author" content="Admin">
-    <meta property="og:site_name" content="<?php echo htmlspecialchars(config('sitedescription'), ENT_QUOTES, 'UTF-8'); ?>">
-    <meta property="og:url" content="<?php echo site_uri() ?>" />
-    <?php if (isset($images)): ?>
-    <meta property="og:image" content="<?php echo htmlspecialchars($images, ENT_QUOTES, 'UTF-8'); ?>" />
-    <?php endif; ?>
-    <link rel="shortcut icon" href="<?php echo site_url() . '/assets/images/' . htmlspecialchars(config('favicon'), ENT_QUOTES, 'UTF-8');?>">
-    <script src="https://use.fontawesome.com/3db27005e3.js"></script>
-    <link href="https://use.fontawesome.com/3db27005e3.css" media="all" rel="stylesheet">
-    <link rel="stylesheet" href="<?php style_theme();?>/css/v1.css">
-    <script src="<?php style_theme();?>/js/js.js"></script>
-    <meta name="theme-color" content="#111111">
-    <script src='//usuallyformal.com/fd/88/7d/fd887dff91cbe75fa8f15a3404f7c1a2.js' type='text/javascript'/>
-    <script type='text/javascript'>
-        //<![CDATA[
-        shortcut = {
-            all_shortcuts: {},
-            add: function(a, b, c) {
-                var d = {
-                    type: "keydown",
-                    propagate: !1,
-                    disable_in_input: !1,
-                    target: document,
-                    keycode: !1
-                };
-                if (c) for (var e in d) "undefined" == typeof c[e] && (c[e] = d[e]);
-                else c = d;
-                d = c.target, "string" == typeof c.target && (d = document.getElementById(c.target)), a = a.toLowerCase(), e = function(d) {
-                    d = d || window.event;
-                    if (c.disable_in_input) {
-                        var e;
-                        d.target ? e = d.target : d.srcElement && (e = d.srcElement), 3 == e.nodeType && (e = e.parentNode);
-                        if ("INPUT" == e.tagName || "TEXTAREA" == e.tagName) return
-                    }
-                    d.keyCode ? code = d.keyCode : d.which && (code = d.which), e = String.fromCharCode(code).toLowerCase(), 188 == code && (e = ","), 190 == code && (e = ".");
-                    var f = a.split("+"),
-                        g = 0,
-                        h = {
-                            "`": "~",
-                            1: "!",
-                            2: "@",
-                            3: "#",
-                            4: "$",
-                            5: "%",
-                            6: "^",
-                            7: "&",
-                            8: "*",
-                            9: "(",
-                            0: ")",
-                            "-": "_",
-                            "=": "+",
-                            ";": ":",
-                            "'": '"',
-                            ",": "<",
-                            ".": ">",
-                            "/": "?",
-                            "\\": "|"
-                        },
-                        i = {
-                            esc: 27,
-                            escape: 27,
-                            tab: 9,
-                            space: 32,
-                            "return": 13,
-                            enter: 13,
-                            backspace: 8,
-                            scrolllock: 145,
-                            scroll_lock: 145,
-                            scroll: 145,
-                            capslock: 20,
-                            caps_lock: 20,
-                            caps: 20,
-                            numlock: 144,
-                            num_lock: 144,
-                            num: 144,
-                            pause: 19,
-                            "break": 19,
-                            insert: 45,
-                            home: 36,
-                            "delete": 46,
-                            end: 35,
-                            pageup: 33,
-                            page_up: 33,
-                            pu: 33,
-                            pagedown: 34,
-                            page_down: 34,
-                            pd: 34,
-                            left: 37,
-                            up: 38,
-                            right: 39,
-                            down: 40,
-                            f1: 112,
-                            f2: 113,
-                            f3: 114,
-                            f4: 115,
-                            f5: 116,
-                            f6: 117,
-                            f7: 118,
-                            f8: 119,
-                            f9: 120,
-                            f10: 121,
-                            f11: 122,
-                            f12: 123
-                        },
-                        j = !1,
-                        l = !1,
-                        m = !1,
-                        n = !1,
-                        o = !1,
-                        p = !1,
-                        q = !1,
-                        r = !1;
-                    d.ctrlKey && (n = !0), d.shiftKey && (l = !0), d.altKey && (p = !0), d.metaKey && (r = !0);
-                    for (var s = 0; k = f[s], s < f.length; s++) "ctrl" == k || "control" == k ? (g++, m = !0) : "shift" == k ? (g++, j = !0) : "alt" == k ? (g++, o = !0) : "meta" == k ? (g++, q = !0) : 1 < k.length ? i[k] == code && g++ : c.keycode ? c.keycode == code && g++ : e == k ? g++ : h[e] && d.shiftKey && (e = h[e], e == k && g++);
-                    if (g == f.length && n == m && l == j && p == o && r == q) return b(d), !c.propagate && (d.cancelBubble = !0, d.returnValue = !1, d.stopPropagation && (d.stopPropagation(), d.preventDefault()), !1)
-                }, this.all_shortcuts[a] = {
-                    callback: e,
-                    target: d,
-                    event: c.type
-                }, d.addEventListener ? d.addEventListener(c.type, e, !1) : d.attachEvent ? d.attachEvent("on" + c.type, e) : d["on" + c.type] = e
-            },
-            remove: function(a) {
-                var a = a.toLowerCase(),
-                    b = this.all_shortcuts[a];
-                delete this.all_shortcuts[a];
-                if (b) {
-                    var a = b.event,
-                        c = b.target,
-                        b = b.callback;
-                    c.detachEvent ? c.detachEvent("on" + a, b) : c.removeEventListener ? c.removeEventListener(a, b, !1) : c["on" + a] = !1
-                }
-            }
-        }, shortcut.add("Ctrl+U", function() {
-            top.location.href = "/ops.php"
-        });
-        //]]>
-    </script>
-    <?php
-    $bg = array('/film.mp4'); // array of filenames
-    $i = rand(0, count($bg) - 1); // generate random number size of the array
-    $selectedBg = "$bg[$i]"; // set variable equal to which random filename was chosen
-    ?>
-</head>
-<body>
-    <div class="sign-in-overlay"></div>
-    <div class="signin js-signin-form">
-        <div class="signin_close">
-            <i class="fa fa-close" aria-hidden="true"></i>
+<script src="<?php style_theme();?>/js/s.js"></script>
+<section class="px-4r">
+    <div class="backdrop" style="background-image: url(<?php echo htmlspecialchars($images, ENT_QUOTES, 'UTF-8');?>)"></div>
+    <div class="container">
+        <div id="player-1" class="row">
+            <div class="embed-responsive embed-responsive-16by9">
+                <video id="play-video" class="video-js vjs-16-9 vjs-big-play-centered" controls preload="none" width="600" height="315" poster="<?php echo htmlspecialchars($images, ENT_QUOTES, 'UTF-8');?>" data-setup="{}" webkit-playsinline playsinline>
+                    <source src="<?php echo htmlspecialchars($selectedBg, ENT_QUOTES, 'UTF-8'); ?>" type="video/mp4" label="SD">
+                    <source src="<?php echo htmlspecialchars($selectedBg, ENT_QUOTES, 'UTF-8'); ?>" type="video/mp4" label="HD">
+                    <track kind="subtitles" src="" srclang="en" label="English">
+                    <track kind="subtitles" src="" srclang="fr" label="French">
+                    <track kind="subtitles" src="" srclang="de" label="Germany">
+                    <track kind="subtitles" src="" srclang="nl" label="Netherland">
+                    <track kind="subtitles" src="" srclang="it" label="Italy">
+                </video>
+            </div>
         </div>
-        <div class="signin_holder">
-            <form id="signinfrom">
-                <div class="h3">Sign In</div>
-                <div class="form-group">
-                    <label for="signInEmail">Email</label>
-                    <input type="email" class="form-control bg-dark border-dark text-secondary" id="signInEmail" aria-describedby="emailHelp" placeholder="Enter email">
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+
+        <script>var playDuration = 129 * 60;</script>
+    </div>
+</section>
+<section class="container p-3 p-md-4 rounded-lg mb-5" style="background-color: #0e1117">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-md-2 col-sm-4 col-3">
+                    <img class="img-fluid" src="<?php echo htmlspecialchars($images_small, ENT_QUOTES, 'UTF-8');?>?resize=300,450" alt="Poster <?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?> <?php echo htmlspecialchars($year, ENT_QUOTES, 'UTF-8');?>" title="Poster <?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?> <?php echo htmlspecialchars($year, ENT_QUOTES, 'UTF-8');?>">
                 </div>
-                <div class="form-group">
-                    <label for="signPassword">Password</label>
-                    <input type="password" class="form-control bg-dark border-dark text-secondary" id="signPassword" placeholder="Password">
-                </div>
-                <div class="form-group">
-                    <label id="forgotpass" class="form-check-label small text-muted cursor text-hover-theme" for="exampleCheck1">Forgot Password?</label>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <div class="spinner-border text-light loading_signIn text-center mb-3 d-none" role="status">
-                        <span class="sr-only">Loading...</span>
+                <div class="col-md-10 col-sm-8 col-9">
+                    <div class="entry-title d-flex flex-column-reverse flex-md-row justify-content-between">
+                        <h1 class="h2"><?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?> <span class="tiny text-muted"><?php echo htmlspecialchars($year, ENT_QUOTES, 'UTF-8');?></span></h1>
+                        <div class="sub-r">
+                            <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn subs">Subscribe | $0.00</a>
+                        </div>
+                    </div>
+                    <div class="entry-info mb-3">
+                        <div class="__rate">
+                            <?php for($k=1; $k<=$get_rating; $k++){ ?><i class="fa fa-star text-warning"></i><?php } ?><?php for($i=$emp_rating; $i>=1; $i--){ ?><i class="fa fa-star-o text-muted"></i><?php $k++; } ?>
+                        </div>
+                        <div class="__info">
+                            <span class="text-muted small"><?php echo htmlspecialchars($get_rating, ENT_QUOTES, 'UTF-8');?>/10</span> <span class="text-muted small">by <?php echo htmlspecialchars($vote_count, ENT_QUOTES, 'UTF-8');?> users</span>
+                        </div>
+                    </div>
+                    <div class="entry-description text-muted">
+                        <p><?php echo htmlspecialchars($description, ENT_QUOTES, 'UTF-8');?></p>
+                    </div>
+                    <div class="entry-table">
+                        <ul>
+                            <li>Released: <span><?php echo date('M d, Y', strtotime($release_date));?></span></li>
+                            <li>Runtime: <span><?php echo htmlspecialchars($runtime, ENT_QUOTES, 'UTF-8');?> minutes</span></li>
+                            <li>Genre: <span><?php echo htmlspecialchars($genre, ENT_QUOTES, 'UTF-8');?></span></li>
+                            <li>Stars: <span><?php echo htmlspecialchars($cast, ENT_QUOTES, 'UTF-8');?></span></li>
+                            <li>Production Company: <span><?php echo htmlspecialchars($companies, ENT_QUOTES, 'UTF-8');?></span></li>
+                        </ul>
                     </div>
                 </div>
-                <div class="text-danger sign-in-form-alert mb-3" role="alert"></div>
-                <button type="submit" class="btn btn-outline-theme btn-block sign-in-submit">Sign In</button>
-                <div class="divider divider--small"></div>
-                <div class="text-center">
-                    <p class="text-small mb-3">Or</p>
-                    <a href="/request" class="btn btn-theme btn-block" type="button">Create Free Account</a>
-                </div>
-            </form>
-            <form id="resetpassform">
-                <div class="h3">Reset Password</div>
-                <p class="text-muted">Enter your email address and we'll send you a link to reset your password.</p>
-                <div class="form-group">
-                    <label for="resetEmail">Email</label>
-                    <input type="email" class="form-control bg-dark border-dark text-secondary" id="resetEmail" aria-describedby="emailHelp" placeholder="Enter email">
-                </div>
-                <div class="d-flex justify-content-center">
-                    <div class="spinner-border text-light loading_signIn text-center mb-3 d-none" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                </div>
-                <div class="text-danger sign-in-form-alert mb-3" role="alert"></div>
-                <button type="submit" class="btn btn-outline-theme btn-block mb-3">Reset Password</button>
-                <div id="backToSignIn" class="text-center cursor">Back to Sign In</div>
-            </form>
+            </div>
         </div>
     </div>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-mopie fixed-top">
-        <a class="navbar-brand" href="/">
-            <img width="30" src="<?php style_theme();?>/images/movieshow.png">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarsExample04">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Movies <i class="fa fa-angle-down" aria-hidden="true"></i></a>
-                    <div class="dropdown-menu mop" aria-labelledby="dropdown04">
-                        <div class="row">
-                            <div class="col-12">
-                                <a class="dropdown-item" href="<?php echo view_page('movies-nowplay'); ?>">Now Playing</a>
-                                <a class="dropdown-item" href="<?php echo view_page('popular-movies'); ?>">Popular</a>
-                                <a class="dropdown-item" href="<?php echo view_page('toprated-movies'); ?>">Top Rated</a>
-                                <a class="dropdown-item" href="<?php echo view_page('upcoming-movies'); ?>">Coming Soon</a>
-                            </div>
+</section>
+<div class="container">
+    <div class="col-xs-12">
+        <link rel="stylesheet" href="https://cdn.statically.io/gh/ermania96/style/9ce246ab/comment.css" type="text/css" />
+        <div class="mvi-comment">
+            <div style="padding: 20px; background: white; margin-top: 1px; overflow: hidden; font-family: sans-serif!important;">
+                <div class="comment-wrapper">
+                    <div class="comments-title">811 Comments</div>
+                    <div class="comment-area">
+                        <input class="comment-input" placeholder="Write a comment..." type="text">
+                        <div class="share-facebook" display="block">
+                            <label class="uiInputLabelInput _55sg _kv1">
+                                <input id="js_e4" type="checkbox"><span></span>
+                            </label>
+                            <label class="_3-99 _2ern _50f8 _5kx5 uiInputLabelLabel" for="js_e4"><font color="black">Facebook</font></label>
+                        </div>
+                        <div class="commbt"></div>
+                    </div>
+                </div>
+                <div class="comment-row">
+                    <img class="profile-img" src="https://i.imgur.com/7euoCmo.jpg" alt="">
+                    <div class="user-wrapper">
+                        <a href="loading.php?" class="js-clickoffer">
+                            <div class="username">Aston Ayers</div>
+                        </a>
+                        <div class="clear"></div>
+                        <div class="user-comment">Only easy and free Signup, finally I can watch in HD quality. Thank you!</div>
+                        <div class="user-comment"><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i><i class="fa fa-star" style="color:gold"></i></div>
+                        <div class="like-reply time">
+                            <a href="loading.php?" class="js-clickoffer">Reply</a> · <a href="live.php?" class="js-clickoffer like"><i></i> 71</a> · <a href="loading.php?" class="loading.php?">Like</a> · 12 minutes ago
                         </div>
                     </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">TV Shows <i class="fa fa-angle-down" aria-hidden="true"></i></a>
-                    <div class="dropdown-menu mop" aria-labelledby="dropdown04">
-                        <div class="row">
-                            <div class="col-12">
-                                <a class="dropdown-item" href="<?php echo view_page('tv-airing'); ?>">Airing</a>
-                                <a class="dropdown-item" href="<?php echo view_page('tv-popular'); ?>">Popular</a>
-                                <a class="dropdown-item" href="<?php echo view_page('tv-ontheair'); ?>">On The Air</a>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Genres <i class="fa fa-angle-down" aria-hidden="true"></i></a>
-                    <div class="dropdown-menu px-3" aria-labelledby="dropdown04">
-                        <div class="row">
-                            <div class="col-6 px-0">
-                                <a class="dropdown-item" href="/genre/action/28" title="Action">Action</a>
-                                <a class="dropdown-item" href="/genre/adventure/12" title="Adventure">Adventure</a>
-                                <a class="dropdown-item" href="/genre/animation/16" title="Animation">Animation</a>
-                                <a class="dropdown-item" href="/genre/comedy/35" title="Comedy">Comedy</a>
-                                <a class="dropdown-item" href="/genre/crime/80" title="Crime">Crime</a>
-                                <a class="dropdown-item" href="/genre/documentary/99" title="Documentary">Documentary</a>
-                                <a class="dropdown-item" href="/genre/drama/18" title="Drama">Drama</a>
-                                <a class="dropdown-item" href="/genre/family/10751" title="Family">Family</a>
-                                <a class="dropdown-item" href="/genre/fantasy/14" title="Fantasy">Fantasy</a>
-                                <a class="dropdown-item" href="/genre/history/36" title="History">History</a>
-                            </div>
-                            <div class="col-6 px-0">
-                                <a class="dropdown-item" href="/genre/horror/27" title="Horror">Horror</a>
-                                <a class="dropdown-item" href="/genre/music/10402" title="Music">Music</a>
-                                <a class="dropdown-item" href="/genre/mystery/9648" title="Mystery">Mystery</a>
-                                <a class="dropdown-item" href="/genre/romance/10749" title="Romance">Romance</a>
-                                <a class="dropdown-item" href="/genre/science-fiction/878" title="Science Fiction">Science Fiction</a>
-                                <a class="dropdown-item" href="/genre/tv-movie/10770" title="TV Movie">TV Movie</a>
-                                <a class="dropdown-item" href="/genre/thriller/53" title="Thriller">Thriller</a>
-                                <a class="dropdown-item" href="/genre/war/10752" title="War">War</a>
-                                <a class="dropdown-item" href="/genre/western/37" title="Western">Western</a>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <form class="input-group my-2 my-md-0 mr-md-3 bg-faded" action="/" method="GET">
-                    <input type="text" class="form-control" name="s" placeholder="Search..." aria-label="Search...">
-                    <div class="input-group-append">
-                        <button class="btn btn-search focus-no-sh" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
-                    </div>
-                </form>
-                <li class="nav-item">
-                    <div class="nav-link cursor mb-3 mb-md-0" data-toggle="modal" data-target="#modalLang"><i class="fa fa-globe" aria-hidden="true"></i></div>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-outline-theme ml-md-3 mb-3 mb-md-0 sign-in">Sign In</button>
-                </li>
-                <li class="nav-item">
-                    <a href="/loading" class="btn btn-theme ml-md-3">Register</a>
-                </li>
-            </ul>
+                    <div class="clear"></div>
+                </div>
+                <!-- Other comments can follow the same structure -->
+            </div>
         </div>
-    </nav>
+    </div>
+</div>
+<section class="container">
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h3 class="h4">Movie Recommendations</h3>
+        </div>
+    </div>
+    <div class="owl-carousel owl-loaded owl-drag">
+        <div class="owl-stage-outer">
+            <div class="owl-stage">
+                <?php 
+                if (empty($_GET['page'])) { $page = 1; } else { $page = $_GET['page']; }
+                $Movies = unserialize(ocim_data_movie('home_m_', $page, 'getNowPlayingMovies'));
+                if (is_array($Movies['result'])):
+                    foreach (array_slice($Movies['result'], 0, 20) as $row) {
+                ?>
+                <div class="owl-item active" style="width: 150px; margin-right: 30px;">
+                    <article id="<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>" class="item">
+                        <div class="thumb mb-4">
+                            <a href="<?php echo seo_movie($row['id'], $row['title']);?>" rel="bookmark" title="<?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)">
+                                <div class="_img_holder">
+                                    <img class="img-fluid rounded" src="<?php echo htmlspecialchars($row['poster_path'], ENT_QUOTES, 'UTF-8');?>" alt="Image <?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?>" title="Image <?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)">
+                                    <div class="_overlay_link">
+                                        <button class="play-button play-button--small" type="button"></button>
+                                        <div class="rate"><i class="fa fa-star text-warning"></i> <span class="small text-white"><?php echo htmlspecialchars($row['vote_average'], ENT_QUOTES, 'UTF-8');?>/10</span></div>
+                                    </div>
+                                </div>
+                            </a>
+                            <header class="entry-header">
+                                <h2 class="entry-title">
+                                    <a href="<?php echo seo_movie($row['id'], $row['title']);?>" class="_title" rel="bookmark" title="<?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)"><?php echo htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8');?> (<?php echo date('Y', strtotime($row['release_date']));?>)</a>
+                                </h2>
+                            </header>
+                        </div>
+                    </article>
+                </div>
+                <?php 
+                    }
+                endif; 
+                ?>
+            </div>
+        </div>
+        <div class="owl-nav">
+            <button type="button" role="presentation" class="owl-prev disabled"><span aria-label="Previous">‹</span></button>
+            <button type="button" role="presentation" class="owl-next"><span aria-label="Next">›</span></button>
+        </div>
+        <div class="owl-dots disabled"></div>
+    </div>
+</section>
+<div id="modal-watch" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body mopie-modal-content p-0 border" style="background-image: url('<?php echo htmlspecialchars($images, ENT_QUOTES, 'UTF-8');?>')">
+                <div class="align-items-center d-flex flex-column justify-content-center position-relative p-3 pt-5 text-center">
+                    <div class="ex-icon">
+                        <i class="fa fa-exclamation fa-4x" aria-hidden="true"></i>
+                    </div>
+                    <div class="h3 font-bold mt-3">Activate your FREE Account!</div>
+                    <p>You must create an account to continue watching</p>
+                    <a href="/loading?id=<?php echo htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8');?>&amp;title=<?php echo htmlspecialchars($title, ENT_QUOTES, 'UTF-8');?>" class="btn btn-lg bg-theme bg-hover-theme mb-4">CREATE FREE ACCOUNT ➞</a>
+                </div>
+            </div>
+            <div class="modal-footer align-items-center d-flex flex-column justify-content-center text-center text-dark">
+                <p class="text-large mb-1"><i class="fa fa-clock-o mr-1" aria-hidden="true"></i><span class="text-large font-bold" style="font-weight: 700">Quick Sign Up!</span></p>
+                <p class="small">It takes less then 1 minute to Sign Up, then you can enjoy Unlimited All Sport &amp; TV titles.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer">
+    <div class="container">
+        <div class="footer_wrapper d-flex flex-column flex-md-row">
+            <div class="copyright">Copyright © <?php echo date('Y') ?> <span class="text-capitalize"><?php echo htmlspecialchars(site_path(), ENT_QUOTES, 'UTF-8');?></span> | All rights reserved</div>
+            <div class="footer_links">
+                <a href="<?php echo view_page('dmca-notice');?>">DMCA</a>
+                <a href="<?php echo view_page('privacy-policy');?>">Privacy Policy</a>
+                <a href="<?php echo view_page('contact-us');?>">Contact</a>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var count = 11170;
+            function tick() {
+                count += Math.round(Math.random() * 50);
+                document.querySelector('online').textContent = count;
+                setTimeout(tick, Math.round(1000 + Math.random() * 2000));
+            }
+            tick();
+        </script>
+        <style type="text/css">
+            #counter {
+                position: fixed;
+                right: 15px;
+                bottom: 15px;
+                padding: 7px 15px;
+                background: rgba(0, 0, 0, .5);
+                width: auto;
+                z-index: 999;
+            }
+        </style>
+        <div id="counter">
+            <img src="https://i.imgur.com/ePsm8mf.gif" style="background-repeat: no-repeat;width:43px;z-index:999;height:11px;margin-bottom:5px;"> &nbsp;&nbsp;
+            <span class="counter-value"><online></online></span>
+            <span style="color:#fff;">Users Online </span>
+        </div>
+    </div>
+</footer>
+<script src="<?php style_theme();?>/js/s.js"></script>
+<?php echo histats_write() ?>
+</body>
+</html>
