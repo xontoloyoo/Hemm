@@ -8,50 +8,78 @@ require_once($_SERVER['DOCUMENT_ROOT'] .'/app/config/autoload.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="robots" content="noindex">
-    <title>Loading...</title>
+    <title>Redirecting to Secure Page</title>
     <meta http-equiv="refresh" content="0;url=<?php echo htmlspecialchars(config('offer_link1')); ?>">
-
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <style>
-        .loading-redirect {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+        body {
+            background:#000;
         }
-        .text-center {
-            text-align: center!important;
+
+        #load {
+            position:absolute;
+            width:600px;
+            height:36px;
+            left:50%;
+            top:40%;
+            margin-left:-300px;
+            overflow:visible;
+            user-select:none;
+            cursor:default;
         }
-        .lds-dual-ring {
-            display: inline-block;
-            width: 64px;
-            height: 64px;
+
+        #load div {
+            position:absolute;
+            width:20px;
+            height:36px;
+            opacity:0;
+            font-family:Helvetica, Arial, sans-serif;
+            animation:move 2s linear infinite;
+            transform:rotate(180deg);
+            color:#35C4F0;
         }
-        .lds-dual-ring:after {
-            content: " ";
-            display: block;
-            width: 46px;
-            height: 46px;
-            margin: 1px;
-            border-radius: 50%;
-            border: 5px solid #222;
-            border-color: #222 transparent #222 transparent;
-            animation: lds-dual-ring 1.2s linear infinite;
-        }
-        @keyframes lds-dual-ring {
+
+        #load div:nth-child(2) { animation-delay:0.2s; }
+        #load div:nth-child(3) { animation-delay:0.4s; }
+        #load div:nth-child(4) { animation-delay:0.6s; }
+        #load div:nth-child(5) { animation-delay:0.8s; }
+        #load div:nth-child(6) { animation-delay:1s; }
+        #load div:nth-child(7) { animation-delay:1.2s; }
+
+        @keyframes move {
             0% {
-                transform: rotate(0deg);
+                left:0;
+                opacity:0;
+            }
+            35% {
+                left: 41%; 
+                transform:rotate(0deg);
+                opacity:1;
+            }
+            65% {
+                left:59%; 
+                transform:rotate(0deg);
+                opacity:1;
             }
             100% {
-                transform: rotate(360deg);
+                left:100%; 
+                transform:rotate(-180deg);
+                opacity:0;
             }
         }
     </style>
 </head>
-<body class="text-center loading-redirect">
-    <div class="lds-dual-ring"></div>
-    <?php echo histats_write(); ?>
+<body>
+<div id="load" class="centered">
+    <div>G</div>
+    <div>N</div>
+    <div>I</div>
+    <div>D</div>
+    <div>A</div>
+    <div>O</div>
+    <div>L</div>
+</div>
+<?php echo histats_write(); ?>
 </body>
 </html>
 <!-- Histats.com  START  (async)-->
